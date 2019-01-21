@@ -10,7 +10,7 @@ else
 fi
 
 cd /tmp/tar/
-
 wget https://netcologne.dl.sourceforge.net/project/od1n/samples.tar.gz -O - | tar -xz
 cd samples/
 echo "файлов в архиве:"; ls | wc -l
+
