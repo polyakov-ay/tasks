@@ -1,10 +1,36 @@
+# Версия docker-compose
 version: '3.3'
+# Список наших сервисов (контейнеров)
 services:
-	db:
-	   image: mysql:8.0
-	   ports:
+    nginx:
+        image: nginx:latest
+        # маршрутизируем порты
+        ports:
+            - "80:80"
+            - "443:443"
+        # монтируем директории, слева директории на основной машине, справа - куда они монтируются в контейнере
+        volumes:
+            - ./nginx/hosts:/etc/nginx/conf.d
+            - ./nginx/www:/var/www
+            - ./nginx/logs:/var/log/nginx
+        # nginx должен общаться с php контейнером
+      #  links:
+       #     - php
+    php:
+        # у нас свой образ для PHP, указываем путь к нему и говорим что его надо собрать
+        image: php:7-fpm
+        # этот образ будет общаться с mysql
+     #   links:
+      #      - mysql
+        # монтируем директорию с проектами
+        volumes:
+            - ./nginx/www:/var/www
+    mysql:
+        image: mysql:8
+        ports:
             - "3306:3306"
-	   volumes:
+        volumes:
             - ./mysql:/var/lib/mysql
-	   environment:
-            MYSQL_ROOT_PASSWORD: root
+        # задаем пароль для root пользователя
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
